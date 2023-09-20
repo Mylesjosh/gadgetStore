@@ -12,12 +12,12 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-      ChangeNotifierProvider(create: (context) => ItemsModel(
+      /*ChangeNotifierProvider(create: (context) => ItemsModel(
         name: "",
         image: "",
         price: "",
         description: "",),
-      child: const MyApp(),),
+      child: const MyApp(),),*/const MyApp(),
       );
 }
 

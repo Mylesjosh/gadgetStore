@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gadget_store/auth/login.dart';
 import 'package:page_transition/page_transition.dart';
 
 
@@ -61,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       if (status == AnimationStatus.completed){
         Navigator.pushReplacement(context,
             PageTransition(
-              type: PageTransitionType.fade, child: UIHomePage(), duration: Duration(milliseconds: 2000),
+              type: PageTransitionType.fade, child: LoginPage(), duration: Duration(milliseconds: 600),
             ),);
       }
     });

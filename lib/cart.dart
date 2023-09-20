@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:gadget_store/items_model.dart';
-import 'package:provider/provider.dart';
 
 class ProductsCart extends StatefulWidget {
 
@@ -12,63 +12,62 @@ class ProductsCart extends StatefulWidget {
 
 class _ProductsCartState extends State<ProductsCart> {
   @override
-  Widget build(BuildContext context) {final itemsModel = context.watch<ItemsModel>();
-    return Consumer<ItemsModel>(builder: (context, value, child) =>
-       Scaffold(
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff131312),
-          title: Text("My Cart", style: TextStyle(
-              color: Color(0xffFFFFFF),
-              fontSize: 10, fontWeight: FontWeight.w600 ),),
-          actions: [Image.asset("assets/images/cart.png"),],
+          title: Center(
+            child: Text("My Cart", style: TextStyle(
+                color: Color(0xffFFFFFF),
+                fontSize: 20, fontWeight: FontWeight.w600 ),),
+          ),
         ),
 
         body: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0,),
           child: ListView(
             children: [
-              SizedBox(height: 15,),
+              SizedBox(height: 25,),
 
-            GridView.builder(
+            ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 20.0,
-                  crossAxisCount: 1,
-                ),
-                itemCount: value.cart.length,
+                itemCount: 4,
                 itemBuilder: (context, index){
 
-                  final ItemsModel cartItem = value.cart[index];
+                  /*final ItemsModel cartItem = value.cart[index];
 
                   final String Itemname = cartItem.name;
                   final String Itemprice = cartItem.price;
-                  final String Itemdes = cartItem.description;
-                  final String Itemimg = cartItem.image;
+                  final String Itemdes = cartItem.description1;
+                  final String Itemimg = cartItem.image;*/
 
 
-                  return Container(
-                    height: 99,
-                    width: 343,
-                    child: Row(
+                  return Card(
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset(Itemimg),
-                        SizedBox(width: 20,),
-
-                        Column(crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
                           children: [
-                            Text(Itemname),
-                            SizedBox(height: 5,),
-                            Text(Itemdes),
-                            SizedBox(height: 10,),
-                            Text(Itemprice),
+                            Image.asset(access[index].image,height: 120, width: 200,),
+                            SizedBox(width: 5.w,),
+
+                            Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(access[index].name),
+                                SizedBox(height: 5.h,),
+                                Text(access[index].description1),
+                                SizedBox(height: 7.h,),
+                                Text(access[index].price),
+                              ],
+                            ),
                           ],
                         ),
 
-                        SizedBox(width: 12,),
+                       // SizedBox(width: 10.w,),
 
                         Column(mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Row(
                               children: [
@@ -90,16 +89,51 @@ class _ProductsCartState extends State<ProductsCart> {
                     ),
                   );
                 }
-            )
+            ),
 
+              SizedBox(height: 20,),
+
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Item Quantity:"),
+                          SizedBox(height: 5,),
+                          Text("Total:")
+                        ],
+                      ),
+
+                      Column(
+                        children: [
+                          Text("4"),
+                          SizedBox(height: 5,),
+                          Text("\$2099.99")
+                        ],
+                      ),
+                    ],
+                  ),
+
+                ),
+
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20,),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text('Check Out'),
+
+
+                ),
+              ),
+              SizedBox(height: 20.h,),
 
             ]
           ),
         ),
 
 
-      ),
-    );
+      );
   }
 }
 
