@@ -5,19 +5,29 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:gadget_store/items_model.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+  final ItemsModel selected;
+  const ProductDetails({required this.selected, Key? key}) : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetails();
 }
 
 class _ProductDetails extends State<ProductDetails> {
-
+  late ItemsModel selected;
   @override
 
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selected = widget.selected;
+  }
+
   Widget build(BuildContext context){
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff131312),
@@ -38,30 +48,24 @@ class _ProductDetails extends State<ProductDetails> {
 
       body: ListView(
         children: [
-      GridView.builder(
+      ListView.builder(
           shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-          ),
-          itemCount: 1 , 
+          itemCount: 1,
           itemBuilder: (context, index) {
             return Container(color: Color(0xffEDECF2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    color: Colors.transparent,
-                      height: 220,
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: Image.asset(access[index].image),
-                      ),
-                    ),
+                    child: Center(child: Image.asset(selected.image,fit: BoxFit.fitHeight,)),
+                    width: MediaQuery.of(context).size.width,
+                    height: 300.h,
+                  ),
 
 
                     ClipPath(
                           clipper: WaveClipperOne(),
-                          child: Container(height:265.h,
+                          child: Container(height:300.h,
 
                             decoration: BoxDecoration(
                               color: Color(0xffFFFFFF),
@@ -73,7 +77,7 @@ class _ProductDetails extends State<ProductDetails> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Airpods Max", style: TextStyle(
+                                  Text(selected.name, style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 24,
 
@@ -97,7 +101,7 @@ class _ProductDetails extends State<ProductDetails> {
 
                                   SizedBox(height: 10,),
 
-                                  Text(access[index].description2, style: TextStyle(
+                                  Text(selected.description2, style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     fontSize: 12,
 
@@ -113,18 +117,15 @@ class _ProductDetails extends State<ProductDetails> {
 
                                       Padding(padding: const EdgeInsets.only(left: 15.0, right: 15.0,),
                                           child:
-                                          Row(
-                                            children: [
-                                              CircleAvatar(radius: 14,
-                                              backgroundColor: Color(0xff343333),
-                                              child: Center(child: Icon(Icons.remove, color: Color(0xffFFFFFF),)),),
-                                              SizedBox(width: 5,),
-                                              Text("1"),
-                                              SizedBox(width: 5,),
-                                              CircleAvatar(radius: 14,
-                                                backgroundColor: Color(0xff343333),
-                                                child: Center(child: Icon(Icons.add, color: Color(0xffFFFFFF),)),),
-                                            ],
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              setState(() {
+
+                                              });
+                                              cartProvider.addToCart(selected);
+                                            },
+                                            child: Text('Add to Cart'),
+
                                           ),
                                       ),
                                     ],

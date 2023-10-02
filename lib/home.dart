@@ -27,17 +27,17 @@ class UIHomePage extends StatefulWidget {
 }
 
 class _UIHomePageState extends State<UIHomePage> {
-  int _cartBadgeAmount = 0;
-  late bool _showCartBadge;
+  int cartBadgeAmount = 0;
+  late bool showCartBadge;
 
   int index = 1;
 
+
   @override
   Widget build(BuildContext context) {
-   // final items_model = context.read<ItemsModel>();
-    //final items = items_model.items;
-
-    _showCartBadge = _cartBadgeAmount > 0;
+    final cartProvider = Provider.of<CartProvider>(context);
+    cartBadgeAmount = cartProvider.cartCount;
+    showCartBadge = cartBadgeAmount > 0;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
@@ -63,7 +63,7 @@ class _UIHomePageState extends State<UIHomePage> {
           IconButton(
             icon: badges.Badge(
 
-              badgeContent: Text(_cartBadgeAmount.toString(),style: TextStyle(color: Color(0xfffdfdfe)),),
+              badgeContent: Text(cartBadgeAmount.toString(),style: TextStyle(color: Color(0xfffdfdfe)),),
 
               badgeAnimation: badges.BadgeAnimation.scale(
                 animationDuration: Duration(seconds: 1),
@@ -72,7 +72,7 @@ class _UIHomePageState extends State<UIHomePage> {
 
               position: badges.BadgePosition.topEnd(top: -13, end: -5),
 
-              showBadge: _showCartBadge,
+              showBadge: showCartBadge,
               badgeStyle: badges.BadgeStyle(
                 shape: badges.BadgeShape.circle,
                 badgeColor: Colors.red,
@@ -190,14 +190,14 @@ class _UIHomePageState extends State<UIHomePage> {
 
             ),
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
               child: Column(
 
                 children: [
 
                   Container(
                     height: 150,
-                    width: MediaQuery.of(context).size.width,
+                    width: 343.w,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Color(0xff843667),
@@ -206,7 +206,7 @@ class _UIHomePageState extends State<UIHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(30.0),
+                            padding: const EdgeInsets.only(top: 30.0, bottom: 20.0, left: 20.0, right: 20.0,),
                             child: const Column(
 
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +231,6 @@ class _UIHomePageState extends State<UIHomePage> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 100,),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -311,9 +310,9 @@ class _UIHomePageState extends State<UIHomePage> {
                                             child: Center(
                                               child: GestureDetector(
                                                   onTap: (){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => (ProductDetails())));
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => (ProductDetails(selected: items[index],))));
                                                   },
-                                                  child: Image.asset(items[index].image)),
+                                                  child: Image.asset(items[index].image, height: 78,)),
                                             ),
                                           ),
                                       ),
@@ -341,7 +340,7 @@ class _UIHomePageState extends State<UIHomePage> {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(items[index].price , style: TextStyle(
+                                            Text(items[index].price.toString() , style: TextStyle(
                                               color: Color(0xff343333),
                                               fontSize: 12.0,
                                               fontWeight: FontWeight.w700,
@@ -350,14 +349,11 @@ class _UIHomePageState extends State<UIHomePage> {
                                               backgroundColor: Colors.black,
                                               radius: 12,
                                               child: GestureDetector(
-                                                onTap: () {/*if (_cartBadgeAmount > 0) {
-                                                  final selectedCartItem = items[index]; // Get the selected item
-                                                  //items_model.addToCart(selectedCartItem);
-                                                }*/
-
+                                                onTap: () {
                                                   setState(() {
-                                                    _cartBadgeAmount++;
+
                                                   });
+                                                  cartProvider.addToCart(items[index]);
                                                 },
                                                 child: CircleAvatar(
                                                   backgroundColor: Colors.black,
@@ -377,7 +373,7 @@ class _UIHomePageState extends State<UIHomePage> {
                       }
                   ),
 
-                  SizedBox(height: 10,),
+                  SizedBox(height: 20,),
 
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0, right: 4.0,),
@@ -429,7 +425,11 @@ class _UIHomePageState extends State<UIHomePage> {
                                           width: MediaQuery.of(context).size.width,
                                           color: Color(0xffFAFCFF),
                                           child: Center(
-                                            child: Image.asset(items[index+2].image),
+                                            child:GestureDetector(
+                                                onTap: (){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => (ProductDetails(selected: items[index+2],))));
+                                                },
+                                                child: Image.asset(items[index+2].image, height: 70,),),
                                           ),
                                         ),
                                     ),
@@ -457,7 +457,7 @@ class _UIHomePageState extends State<UIHomePage> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(items[index+2].price , style: TextStyle(
+                                          Text(items[index+2].price.toString() , style: TextStyle(
                                             color: Color(0xff343333),
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.w700,
@@ -468,8 +468,10 @@ class _UIHomePageState extends State<UIHomePage> {
                                             child: GestureDetector(
                                               onTap: () {
                                                 setState(() {
-                                                  _cartBadgeAmount++;// widget.cartManager.addItem(items[index]); // Add the selected item to the shared list
+
                                                 });
+                                                cartProvider.addToCart(items[index+2]);
+
                                               },
                                               child: Center(child: Icon(Icons.add, color: Color(0xffFFFFFF))),
                                             ),

@@ -2,17 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:gadget_store/items_model.dart';
+import 'package:provider/provider.dart';
 
 class ProductsCart extends StatefulWidget {
 
- const ProductsCart({Key? key}) : super(key: key);
+ const ProductsCart({ Key? key}) : super(key: key);
   @override
   State<ProductsCart> createState() => _ProductsCartState();
 }
 
 class _ProductsCartState extends State<ProductsCart> {
+
   @override
+
   Widget build(BuildContext context) {
+
+    final cartProvider = Provider.of<CartProvider>(context);
+    int totalquantity = 0;
+    double totalprice = 0;
+    cartProvider.cartItems.forEach((item) {
+      totalprice += item.price*item.quantity;
+    });
+
+    cartProvider.cartItems.forEach((item) {
+      totalquantity += item.quantity;
+    });
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff131312),
@@ -25,40 +39,33 @@ class _ProductsCartState extends State<ProductsCart> {
 
         body: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0,),
-          child: ListView(
+          child: ListView(padding: const EdgeInsets.only(left: 10.0, right: 13.0,),
             children: [
               SizedBox(height: 25,),
 
             ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: 4,
+                itemCount: cartProvider.cartItems.length,
                 itemBuilder: (context, index){
 
-                  /*final ItemsModel cartItem = value.cart[index];
-
-                  final String Itemname = cartItem.name;
-                  final String Itemprice = cartItem.price;
-                  final String Itemdes = cartItem.description1;
-                  final String Itemimg = cartItem.image;*/
-
-
+                  final item = cartProvider.cartItems[index];
                   return Card(
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Image.asset(access[index].image,height: 120, width: 200,),
+                            Image.asset(item.image,height: 120, width: 120,),
                             SizedBox(width: 5.w,),
 
                             Column(crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(access[index].name),
+                                Text(item.name),
                                 SizedBox(height: 5.h,),
-                                Text(access[index].description1),
+                                Text(item.description1),
                                 SizedBox(height: 7.h,),
-                                Text(access[index].price),
+                                Text(item.price.toString()),
                               ],
                             ),
                           ],
@@ -71,15 +78,33 @@ class _ProductsCartState extends State<ProductsCart> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(radius: 14,
-                                  backgroundColor: Color(0xff343333),
-                                  child: Center(child: Icon(Icons.remove, color: Color(0xffFFFFFF),)),),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (item.quantity > 1) {
+                                      cartProvider.decrementQuantity(item);
+                                    }
+                                    else
+                                    cartProvider.removeFromCart(item);
+                                  },
+                                  child: CircleAvatar(radius: 14,
+                                    backgroundColor: Color(0xff343333),
+                                    child: Center(child: Icon(Icons.remove, color: Color(0xffFFFFFF),)),),
+                                ),
                                 SizedBox(width: 5,),
-                                Text("1"),
+                                Text(item.quantity.toString()),
                                 SizedBox(width: 5,),
-                                CircleAvatar(radius: 14,
-                                  backgroundColor: Color(0xff343333),
-                                  child: Center(child: Icon(Icons.add, color: Color(0xffFFFFFF),)),),
+
+                                GestureDetector(
+                                  onTap: (){
+                                    cartProvider.incrementQuantity(item);
+                                  },
+                                  child: CircleAvatar(radius: 14,
+                                    backgroundColor: Color(0xff343333),
+                                    child: Center(child: Icon(
+                                      Icons.add,
+                                      color: Color(0xffFFFFFF),
+                                    )),),
+                                ),
                               ],
                             )
                           ],
@@ -107,9 +132,9 @@ class _ProductsCartState extends State<ProductsCart> {
 
                       Column(
                         children: [
-                          Text("4"),
+                          Text(totalquantity.toString()),
                           SizedBox(height: 5,),
-                          Text("\$2099.99")
+                          Text(totalprice.toString()),
                         ],
                       ),
                     ],

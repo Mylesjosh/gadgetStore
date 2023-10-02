@@ -27,15 +27,14 @@ class ComputerPage extends StatefulWidget {
 }
 
 class _UIHomePageState extends State<ComputerPage> {
-  int _cartBadgeAmount = 0;
-  late bool _showCartBadge;
-
+  int cartBadgeAmount = 0;
+  late bool showCartBadge;
 
   @override
   Widget build(BuildContext context) {
-    // final items_model = context.read<ItemsModel>();
-    //final items = items_model.items;
-    _showCartBadge = _cartBadgeAmount > 0;
+    final cartProvider = Provider.of<CartProvider>(context);
+    cartBadgeAmount = cartProvider.cartCount;
+    showCartBadge = cartBadgeAmount > 0;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -60,7 +59,7 @@ class _UIHomePageState extends State<ComputerPage> {
           IconButton(
             icon: badges.Badge(
 
-              badgeContent: Text(_cartBadgeAmount.toString(),style: TextStyle(color: Color(0xfffdfdfe)),),
+              badgeContent: Text(cartBadgeAmount.toString(),style: TextStyle(color: Color(0xfffdfdfe)),),
 
               badgeAnimation: badges.BadgeAnimation.scale(
                 animationDuration: Duration(seconds: 1),
@@ -69,7 +68,7 @@ class _UIHomePageState extends State<ComputerPage> {
 
               position: badges.BadgePosition.topEnd(top: -13, end: -5),
 
-              showBadge: _showCartBadge,
+              showBadge: showCartBadge,
               badgeStyle: badges.BadgeStyle(
                 shape: badges.BadgeShape.circle,
                 badgeColor: Colors.red,
@@ -194,7 +193,7 @@ class _UIHomePageState extends State<ComputerPage> {
 
                   Container(
                     height: 150,
-                    width: MediaQuery.of(context).size.width,
+                    width: 343.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: Color(0xff843667),
@@ -203,7 +202,7 @@ class _UIHomePageState extends State<ComputerPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(30.0),
+                          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0, left: 20.0, right: 20.0,),
                           child: const Column(
 
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,7 +227,6 @@ class _UIHomePageState extends State<ComputerPage> {
                             ],
                           ),
                         ),
-                        SizedBox(width: 100,),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -285,9 +283,9 @@ class _UIHomePageState extends State<ComputerPage> {
                                   child: Center(
                                     child: GestureDetector(
                                         onTap: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => (ProductDetails())));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => (ProductDetails(selected: computer[index],))));
                                         },
-                                        child: Image.asset(computer[index].image)),
+                                        child: Image.asset(computer[index].image,height: 78,)),
                                   ),
                                 ),
                               ),
@@ -315,19 +313,14 @@ class _UIHomePageState extends State<ComputerPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(computer[index].price , style: TextStyle(
+                                    Text(computer[index].price.toString() , style: TextStyle(
                                       color: Color(0xff343333),
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.w700,
                                     ),),
-                                    CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      radius: 12,
-                                      child: GestureDetector(
+                                    GestureDetector(
                                         onTap: () {
-                                          setState(() {
-                                            _cartBadgeAmount++;
-                                          });
+                                          cartProvider.addToCart(items[index]);
                                         },
                                         child: CircleAvatar(
                                           backgroundColor: Colors.black,
@@ -335,7 +328,7 @@ class _UIHomePageState extends State<ComputerPage> {
                                           child: Center(child: Icon(Icons.add, color: Color(0xffFFFFFF))),
                                         ),
                                       ),
-                                    ),
+
 
                                   ],
                                 ),
